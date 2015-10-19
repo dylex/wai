@@ -280,7 +280,8 @@ runServeTLSSocket' tlsset@TLSSettings{..} set credential sock serve =
       }
     -- Adding alpn to user's tlsServerHooks.
     hooks = tlsServerHooks {
-        TLS.onALPNClientSuggest = TLS.onALPNClientSuggest tlsServerHooks <|> Just alpn
+        TLS.onALPNClientSuggest = TLS.onALPNClientSuggest tlsServerHooks <|>
+          (if settingsHTTP2Enabled set then Just alpn else Nothing)
       }
     shared = def {
         TLS.sharedCredentials = TLS.Credentials [credential]
